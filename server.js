@@ -1,10 +1,11 @@
 const React = require("react");
 const ReactDOMServer = require("react-dom/server");
 const ReactRouter = require("react-router");
+const merely = require('merely');
 
-module.exports = function(merely, options) {
+merely.plugin('merely-react-router', (options, isDev) => {
   
-  merely.filter('wrapRootComponent', (ctx, app) => {
+  merely.filter('wrapRootComponent', (app, ctx) => {
     
     const routerContext = ReactRouter.createServerRenderContext();
     
@@ -17,7 +18,7 @@ module.exports = function(merely, options) {
     
   });
   
-  merely.filter('afterRender', (ctx, renderedString) => {
+  merely.on('afterRender', (renderedString, ctx) => {
     
     const routerContext = ctx._reactRouterContext;
     const result = routerContext.getResult();
@@ -29,26 +30,30 @@ module.exports = function(merely, options) {
         Location: result.redirect.pathname
       });
       ctx.res.end();
+      ctx.done();
       
-    } else {
+    } else if(result.mised) {
+      
+      ctx.statusCode = 404;
       
       // If we got a miss, render a 404
-      if(result.missed) {
-        ctx.res.writehead(404);
-        const secondaryRoot = React.createElement(ReactRouter.ServerRouter, {
-          location: ctx.req.url,
-          context: routerContext
-        }, ctx.rootComponent);
-        renderedString = ReactDOMServer.renderToString(secondaryRoot);
-      }
-      
-      ctx.res.write(renderedString);
-      ctx.res.end();
-      
-      return renderedString;
+      // if(result.missed) {
+      //   ctx.res.writehead(404);
+      //   const secondaryRoot = React.createElement(ReactRouter.ServerRouter, {
+      //     location: ctx.req.url,
+      //     context: routerContext
+      //   }, ctx.rootComponent);
+      //   renderedString = ReactDOMServer.renderToString(secondaryRoot);
+      // }
+      // 
+      // ctx.res.write(renderedString);
+      // ctx.res.end();
+      // ctx.done();
       
     }
     
+    return renderedString;
+    
   });
   
-}
+});

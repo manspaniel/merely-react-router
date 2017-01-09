@@ -1,15 +1,15 @@
-import React from 'react';
-import ReactRouter from 'react-router';
+const React = require('react');
+const ReactRouter = require('react-router');
+const merely = require('merely');
 
-module.exports = function(merely, options) {
+merely.plugin('merely-react-router', (options, isDev) => {
   
-  merely.filter('wrapRootComponent', (ctx, app) => {
+  merely.filter('wrapRootComponent', (app, ctx) => {
     
     return React.createElement(ReactRouter.BrowserRouter, {
-      location: ctx.url,
-      context: routerContext
+      // location: "/"
     }, app);
     
   });
   
-}
+});
