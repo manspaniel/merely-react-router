@@ -1,6 +1,6 @@
 {
   "name": "merely-react-router",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "",
   "main": "client.js",
   "scripts": {
@@ -11,6 +11,7 @@
   "peerDependencies": {
     "react": "*",
     "react-dom": "*",
-    "react-router": "^4.0.0"
-  }
+    "react-router-dom": "*"
+  },
+  "dependencies": {}
 }
